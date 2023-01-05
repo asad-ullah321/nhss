@@ -19,6 +19,12 @@ import Footer from "../footer/Footer";
 
 const Lib = () => {
   const books = useSelector((state) => state.books);
+  const [resStatus, setresStatus] = useState();
+  const [response, setResponse] = useState();
+  const dispatch = useDispatch();
+  const { issueBook } = bindActionCreators(actionCreators, dispatch);
+
+
 
   const [filtereData, setfiltereData] = useState(books);
   const [filtereData2, setfiltereData2] = useState(books);
@@ -46,6 +52,57 @@ const Lib = () => {
     date1: "",
     date2: "",
   });
+/*<------------------------------------------------------------------fetech data------------------------------------------------------------------>*/
+
+useEffect(() => {
+  console.log("fecth fine requested");
+  fetch("http://localhost:5000/nhss/lib", {
+    method: "get",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      // "auth-token": token,
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  })
+    .then((res) => {
+      setresStatus(res.status);
+      if (res.status === 200) return res.json();
+      else throw new Error(res.status);
+    })
+    .then((resBody) => {
+      setResponse(resBody);
+    })
+    .catch((err) => {});
+
+    return () => {
+      console.log('The component has mounted!');
+    };
+}, []);
+
+useEffect(() => {
+  if (resStatus === 200) {
+
+    console.log(response.lib);
+    response.lib.map((obj) => {
+      const date = obj.date.slice(0, 10);
+      const duedate = obj.dueDate.slice(0, 10);
+
+      console.log(date);
+      issueBook({
+        _id: obj._id,
+        student_id: obj.student_id,
+        bookName: obj.bookName,
+        date: date,
+        duedate: duedate,
+        status: obj.status,
+      });
+    });
+
+  }
+
+
+}, [response && resStatus]);
 
   /*<------------------------------------------------------------------Use Effects for filters Start here------------------------------------------------------------------>*/
 
@@ -115,13 +172,13 @@ const Lib = () => {
   /*this will apply filter based on ADDED BY and end the call  */
   useEffect(() => {
     if (Dateflag) {
-      //console.log((filtereData[0]._date).getDate())
+      //console.log((filtereData[0].date).getDate())
       if (selectedDate !== "") {
         //console.log(selectedDate);
         setfiltereData(
           filtereData.filter((f) => {
             //  console.log(f.stock);
-            return new Date(f._date).getDate() === selectedDate.getDate();
+            return new Date(f.date).getDate() === selectedDate.getDate();
           })
         );
       }

@@ -26,7 +26,7 @@ const LibTable =React.forwardRef( (props, ref) => {
     _id: "",
     student_id:"",
     bookName:"",
-    _date: "",
+    date: "",
     duedate:"",
     status: "",
   });
@@ -49,15 +49,107 @@ const LibTable =React.forwardRef( (props, ref) => {
   };
   /*hanlde update */
   const handleupdate = () => {
-    console.log(ustockInput);
-    updateissuedBook(ustockInput);
+  //  console.log(ustockInput);
+  //  updateissuedBook(ustockInput);
+    const data = JSON.stringify(ustockInput);
+    console.log(data);
+
+    fetch("http://localhost:5000/nhss/lib", {
+      method: "put",
+
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        // "auth-token": token,
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: data,
+    })
+      .then((res) => {
+        if (res.status === 200) return res.json();
+        else throw new Error(res.status);
+      })
+      .then((resBody) => {
+        console.log(resBody);
+        if (resBody.update === 1) {
+          updateissuedBook(ustockInput);
+          handleClose();
+        }
+      })
+      .catch((err) => {});
+
 
     handleClose();
   };
-  const handleStatusChange = (e, _id) => {
-    console.log(e.target.value, _id);
-    updateBookstatus({ value: e.target.value, id: _id });
+  const handleStatusChange = (e, id) => {
+    //console.log(e.target.value, id);
+ //   updateBookstatus({ value: e.target.value, id: _id });
+
+    console.log(e.target.value, id);
+    //updateFinestatus({ value: e.target.value, id: _id });
+
+    const temp = { value: e.target.value, _id: id };
+    const data = JSON.stringify({ status: e.target.value, _id: id });
+ 
+     fetch("http://localhost:5000/nhss/lib", {
+       method: "PATCH",
+       headers: {
+         "Content-Type": "application/json",
+         Accept: "application/json",
+         // "auth-token": token,
+         // 'Content-Type': 'application/x-www-form-urlencoded',
+       },
+       body: data,
+     }).then((res) => {
+       if (res.status === 200) return res.json();
+       else throw new Error(res.status);
+     })
+     .then((resBody) => {
+       console.log(resBody);
+       if (resBody.update === 1) {
+        updateBookstatus(temp);
+       //  console.log(e.target.value, id);
+         
+       }
+     })
+     .catch((err) => {});
+
   };
+
+
+  const handledelete = (id)=>{
+    const data = JSON.stringify({_id:id});
+   
+
+    fetch("http://localhost:5000/nhss/lib", {
+      method: "delete",
+
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        // "auth-token": token,
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: data,
+    })
+      .then((res) => {
+        
+        if (res.status === 200) return res.json();
+        else throw new Error(res.status);
+      })
+      .then((resBody) => {
+        console.log(resBody);
+        if (resBody.delete === 1) 
+        {
+          deleteissuedBook(id);
+        
+        }
+
+      })
+      .catch((err) => {});
+
+    
+  }
 
   return (
     <div ref={ref}>
@@ -81,7 +173,7 @@ const LibTable =React.forwardRef( (props, ref) => {
                   <td>{s.student_id}</td>
 
                   <td>{s.bookName}</td>
-                  <td>{s._date}</td>
+                  <td>{s.date}</td>
                   <td>{s.duedate}</td>
 
                   <td>
@@ -120,7 +212,7 @@ const LibTable =React.forwardRef( (props, ref) => {
                     </Button>
                     <Button
                       onClick={() => {
-                        deleteissuedBook(s._id);
+                        handledelete(s._id);
                         //console.log(stocks);
                         //console.log(filtereData);
                       }}
@@ -175,10 +267,10 @@ const LibTable =React.forwardRef( (props, ref) => {
                           <Form.Control
                             type="date"
                             placeholder=""
-                            value={ustockInput._date}
+                            value={ustockInput.date}
                             required
                             onChange={uhandlechange}
-                            name="_date"
+                            name="date"
                           />
                         </FloatingLabel>
                       </Col>

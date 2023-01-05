@@ -5,6 +5,7 @@ const multer = require("multer");
 const StockContr = require('../controllers/stock.contr')
 const issueStockContr = require('../controllers/issueStock.contr')
 const fineContr = require ('../controllers/fine.contr')
+const libContr = require('../controllers/lib.contr')
 //const cookieParser = require("cookie-parser");
 //const session = require('express-session');
 //const cenflix = require("../controllers/cenflixController");
@@ -46,6 +47,12 @@ router.patch("/fine", fineContr.updateFineStatus);
 router.delete("/fine", fineContr.deleteFine);
 
 
+
+router.post("/lib", libContr.issueBook);
+router.get("/lib", libContr.fetchall);
+router.put("/lib", libContr.updateIssuedBook);
+router.patch("/lib", libContr.  updateIssuedBookStatus);
+router.delete("/lib", libContr.deleteIssueBook);
 
 
 

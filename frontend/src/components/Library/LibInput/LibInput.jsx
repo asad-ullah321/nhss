@@ -15,7 +15,7 @@ const InputBlock = () => {
   const [bookInput, setBookinput] = useState({
     student_id: "",
     bookName: "",
-    _date: "",
+    date: "",
     duedate: "",
   });
 
@@ -23,21 +23,59 @@ const InputBlock = () => {
   const handlesubmit = (e) => {
     e.preventDefault();
     const temp = {
-      _id: 7,
       student_id: bookInput.student_id,
-    
       bookName: bookInput.bookName,
-      _date: bookInput._date,
+      date: bookInput.date,
       duedate: bookInput.duedate,
       status: "Issued",
     };
-    issueBook(temp);
+
+
+
+    const data = JSON.stringify(temp);
+    console.log(data);
+
+    fetch("http://localhost:5000/nhss/lib", {
+      method: "post",
+
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        // "auth-token": token,
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: data,
+    })
+      .then((res) => {
+        if (res.status === 200) return res.json();
+        else throw new Error(res.status);
+      })
+      .then((resBody) => {
+        console.log(resBody);
+
+        const date = resBody.lib.date.slice(0, 10);
+        const duedate = resBody.lib.dueDate.slice(0, 10);
+        console.log(date);
+        issueBook({
+          _id : resBody.lib._id,
+          student_id: resBody.lib.student_id,
+          bookName: resBody.lib.bookName,
+          date: date,
+          duedate: duedate,
+          status: "Issued",
+        });
+        
+        handleClose();
+      })
+      .catch((err) => {});
+
+
+  
     console.log(temp);
     setBookinput({
       student_id: "",
-      
       bookName: "",
-      _date: "",
+      date: "",
       duedate: "",
     });
     handleClose();
@@ -97,10 +135,10 @@ const InputBlock = () => {
                     <Form.Control
                       type="date"
                       placeholder=""
-                      value={bookInput._date}
+                      value={bookInput.date}
                       required
                       onChange={handlechange}
-                      name="_date"
+                      name="date"
                     />
                   </FloatingLabel>
                 </Col>
