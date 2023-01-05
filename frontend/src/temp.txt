@@ -1,0 +1,618 @@
+import React, { useEffect, useState } from "react";
+import NavBar from "../Navbar/Navbar";
+import "./stock.css";
+
+import { useDispatch } from "react-redux";
+import { bindActionCreators } from "redux";
+import { actionCreators } from "../../states";
+import { useSelector } from "react-redux";
+
+import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
+import Form from "react-bootstrap/Form";
+import { Nav, Row, Col, FloatingLabel, Table, Modal } from "react-bootstrap";
+import Navbar from "react-bootstrap/Navbar";
+import { NavDropdown } from "react-bootstrap";
+import { Link } from "react-router-dom";
+
+const Stock = () => {
+  const dispatch = useDispatch();
+  const { deleteStock, updateStock, addStock } = bindActionCreators(
+    actionCreators,
+    dispatch
+  );
+
+  const stocks = useSelector((state) => state.stocks);
+
+  useEffect(() => {
+    setfiltereData(stocks);
+  }, [stocks]);
+
+  const [search, setsearch] = useState("");
+  const [stockInput, setStocksinput] = useState({
+    date: "",
+    stock: "",
+    location: "",
+    comment: "",
+    username: "",
+    quantity: "",
+  });
+
+  const [ustockInput, usetStocksinput] = useState({
+    _id: "",
+    date: "",
+    stock: "",
+    location: "",
+    comment: "",
+    username: "",
+    quantity: "",
+  });
+
+  const [filtereData, setfiltereData] = useState(stocks);
+  const [StockFilter, setStockFilter] = useState([]);
+  const [LocationFilter, setLoactionFilter] = useState([null]);
+  const [AddedByFilter, setAddedByFilter] = useState([null]);
+  const [selectedStock, setSelectedStock] = useState("Stocks");
+  const [selectedLocation, setSelectedLocation] = useState("Location");
+  const [selectedAddedby, setAddedBy] = useState("Added By");
+  const [searchFlag, setFlagsearch] = useState(false);
+  const [stockflag, setstockflag] = useState(false);
+  const [locationflag, setlocationflag] = useState(false);
+  const [addedbyflag, setaddedflag] = useState(false);
+
+  /*to intilaize filter when first render occurs */
+  useEffect(() => {
+    const uniquestock = [...new Set(stocks.map((s) => s.stock))];
+    setStockFilter([...uniquestock]);
+    const uniqueloaction = [...new Set(stocks.map((s) => s.location))];
+    setLoactionFilter([...uniqueloaction]);
+    const uniqueaddedby = [...new Set(stocks.map((s) => s.username))];
+    setAddedByFilter([...uniqueaddedby]);
+    console.log(StockFilter);
+  }, []);
+  /* onSearch will be used to apply filter on given data */
+
+  useEffect(() => {
+    setfiltereData(stocks);
+    setFlagsearch(true);
+  }, [selectedStock, selectedLocation, selectedAddedby]);
+
+  useEffect(() => {
+    if (searchFlag) {
+      console.log("calling search");
+      setstockflag(true);
+    }
+  }, [searchFlag]);
+
+  useEffect(() => {
+    if (stockflag) {
+      console.log(selectedStock, selectedLocation, selectedAddedby);
+      if (selectedStock !== "Stocks") {
+        setfiltereData(
+          filtereData.filter((f) => {
+            //console.log(f.stock);
+            return f.stock.includes(selectedStock);
+          })
+        );
+      }
+
+      console.log(filtereData, "After stock");
+
+      setstockflag(false);
+      setlocationflag(true);
+    }
+  }, [stockflag]);
+
+  useEffect(() => {
+    if (locationflag) {
+
+      if (selectedLocation !== "Location") {
+        setfiltereData(
+          filtereData.filter((f) => {
+            //  console.log(f.stock);
+            return f.location.includes(selectedLocation);
+          })
+        );
+      }
+  
+      console.log(filtereData, "After Location");
+      setlocationflag(false);
+      setaddedflag(true);
+    }
+  }, [locationflag]);
+
+  useEffect(() => {
+    if (addedbyflag) {
+
+      if (selectedAddedby !== "Added By") {
+        setfiltereData(
+          filtereData.filter((f) => {
+            //  console.log(f.stock);
+            return f.username.includes(selectedAddedby);
+          })
+        );
+      }
+  
+      console.log(filtereData, "After AddedBy");
+      setFlagsearch(false);
+      setaddedflag(false);
+    }
+  }, [addedbyflag]);
+
+  const onSearch = () => {
+    console.log(stocks, "overall");
+    console.log(filtereData, "filter intial");
+    console.log(selectedStock, selectedLocation, selectedAddedby);
+    if (selectedStock !== "Stocks") {
+      setfiltereData(
+        filtereData.filter((f) => {
+          //console.log(f.stock);
+          return f.stock.includes(selectedStock);
+        })
+      );
+    }
+
+    console.log(filtereData, "After stock");
+
+    if (selectedLocation !== "Location") {
+      setfiltereData(
+        filtereData.filter((f) => {
+          //  console.log(f.stock);
+          return f.location.includes(selectedLocation);
+        })
+      );
+    }
+
+    console.log(filtereData, "After Location");
+
+    if (selectedAddedby !== "Added By") {
+      setfiltereData(
+        filtereData.filter((f) => {
+          //  console.log(f.stock);
+          return f.username.includes(selectedAddedby);
+        })
+      );
+    }
+
+    console.log(filtereData, "After AddedBy");
+
+    //console.log(filtereData);
+    //console.log(search.length);
+  };
+
+  const handlechange = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    setStocksinput((prev) => {
+      return { ...prev, [name]: value };
+    });
+  };
+
+  const handlesubmit = (e) => {
+    e.preventDefault();
+    const temp = {
+      _id: 7,
+      stock: stockInput.stock,
+      location: stockInput.location,
+      comment: stockInput.comment,
+      username: stockInput.username,
+      date: stockInput.date,
+      quantity: stockInput.quantity,
+    };
+    addStock(temp);
+    setfiltereData(stocks);
+    console.log(temp);
+  };
+
+  /*states for modal input ehich will be use for updation of stock */
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+
+  const handleShow = (obj) => {
+    usetStocksinput(obj);
+    console.log(obj);
+    setShow(true);
+  };
+
+  const uhandlechange = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    usetStocksinput((prev) => {
+      return { ...prev, [name]: value };
+    });
+  };
+
+  const handleupdate = () => {
+    updateStock(ustockInput);
+    handleClose();
+  };
+
+  return (
+    <div>
+      <NavBar />
+      {/*stock mangment main block*/}
+      <Container>
+        <Navbar bg="light" expand="lg">
+          <Container>
+            <Navbar.Brand className="fs-4">Stock Management</Navbar.Brand>
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Collapse id="basic-navbar-nav">
+              <Nav className="me-auto">
+                <Link exact to="/" className="text-decoration-none">
+                  <Nav.Link className="stockmanagementlinks">
+                    <span style={{ color: "#36454F" }}>New Stock</span>
+                  </Nav.Link>
+                </Link>
+
+                <Link exact to="/" className="text-decoration-none">
+                  <Nav.Link className="stockmanagementlinks">
+                    <span style={{ color: "#36454F" }}>Issue Stock</span>
+                  </Nav.Link>
+                </Link>
+
+                {/* <NavDropdown title="temp" id="basic-nav-dropdown">
+                  <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
+                  <NavDropdown.Item href="#action/3.2">
+                    Another action
+                  </NavDropdown.Item>
+                  <NavDropdown.Item href="#action/3.3">
+                    Something
+                  </NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item href="#action/3.4">
+                    Separated link
+                  </NavDropdown.Item>
+                </NavDropdown>*/}
+
+                {/*<Form className="d-flex">
+                  <Form.Control
+                    type="text"
+                    placeholder="Search by name/location"
+                    className="mx-3"
+                    aria-label="Search"
+                    value={search}
+                    onChange={(e) => onSearch(e)}
+                  />
+                 
+                </Form>*/}
+              </Nav>
+            </Navbar.Collapse>
+          </Container>
+        </Navbar>
+
+        {/* Input Block */}
+        <Container className="pt-2">
+          <Form onSubmit={handlesubmit}>
+            <Row className="g-2">
+              <Col md={4}>
+                <FloatingLabel controlId="floatingInputGrid" label="Stock Name">
+                  <Form.Control
+                    type="text"
+                    placeholder=""
+                    value={stockInput.stock}
+                    required
+                    onChange={handlechange}
+                    name="stock"
+                  />
+                </FloatingLabel>
+              </Col>
+              <Col md={4}>
+                <FloatingLabel controlId="floatingInputGrid" label="Date">
+                  <Form.Control
+                    type="date"
+                    placeholder=""
+                    value={stockInput.date}
+                    required
+                    onChange={handlechange}
+                    name="date"
+                  />
+                </FloatingLabel>
+              </Col>
+              <Col md={4}>
+                <FloatingLabel controlId="floatingInputGrid" label="Location">
+                  <Form.Control
+                    type="text"
+                    placeholder=""
+                    value={stockInput.location}
+                    required
+                    onChange={handlechange}
+                    name="location"
+                  />
+                </FloatingLabel>
+              </Col>
+              <Col md={2}>
+                <FloatingLabel controlId="floatingInputGrid" label="Quantity">
+                  <Form.Control
+                    type="number"
+                    placeholder=""
+                    value={stockInput.quantity}
+                    required
+                    onChange={handlechange}
+                    name="quantity"
+                  />
+                </FloatingLabel>
+              </Col>
+              <Col md={4}>
+                <FloatingLabel controlId="floatingInputGrid" label="Comment">
+                  <Form.Control
+                    type="text"
+                    placeholder=""
+                    value={stockInput.comment}
+                    onChange={handlechange}
+                    required
+                    name="comment"
+                  />
+                </FloatingLabel>
+              </Col>
+              <Col md={4}>
+                <FloatingLabel controlId="floatingInputGrid" label="Added By">
+                  <Form.Control
+                    type="text"
+                    placeholder=""
+                    value={stockInput.username}
+                    required
+                    onChange={handlechange}
+                    name="username"
+                  />
+                </FloatingLabel>
+              </Col>
+              <Col md={2} className="text-center">
+                <Button variant="dark" type="submit" className="py-3 px-5">
+                  Add
+                </Button>
+              </Col>
+            </Row>
+          </Form>
+        </Container>
+
+        <Navbar className="mt-2 mx-3" bg="light" expand="lg">
+          <Container>
+            <Navbar.Brand className="fs-4">Filters</Navbar.Brand>
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Collapse id="basic-navbar-nav">
+              <Nav className="me-auto">
+                <Form.Select
+                  id="stocks"
+                  onChange={(e) => {
+                    setSelectedStock(e.target.value);
+                    console.log(e.target.value);
+                  }}
+                  aria-label="Default select example"
+                  className="me-2"
+                >
+                  <option>Stocks</option>
+                  {StockFilter.map((s) => (
+                    <option value={s}>{s}</option>
+                  ))}
+                </Form.Select>
+
+                <Form.Select
+                  id="Location"
+                  onChange={(e) => {
+                    setSelectedLocation(e.target.value);
+                    console.log(e.target.value);
+                  }}
+                  aria-label="Default select example"
+                  className="me-2"
+                >
+                  <option>Location</option>
+                  {LocationFilter.map((s) => (
+                    <option value={s}>{s}</option>
+                  ))}
+                </Form.Select>
+
+                <Form.Select
+                  id="AddedBy"
+                  onChange={(e) => {
+                    setAddedBy(e.target.value);
+                    console.log(e.target.value);
+                  }}
+                  aria-label="Default select example"
+                  className="me-2"
+                >
+                  <option>Added By</option>
+                  {AddedByFilter.map((s) => (
+                    <option value={s}>{s}</option>
+                  ))}
+                </Form.Select>
+
+                <Button
+                  className="ms-5"
+                  variant="dark"
+                  size="sm"
+                  onClick={() => {}}
+                >
+                  Search
+                </Button>
+
+                {/*<Form className="d-flex">
+                  <Form.Control
+                    type="text"
+                    placeholder="Search by name/location"
+                    className="mx-3"
+                    aria-label="Search"
+                    value={search}
+                    onChange={(e) => onSearch(e)}
+                  />
+                 
+                </Form>*/}
+              </Nav>
+            </Navbar.Collapse>
+          </Container>
+        </Navbar>
+
+        {/* Stock Cards */}
+        <Container className="table-container">
+          <Table responsive="md" striped bordered hover variant="light">
+            <thead>
+              <tr>
+                <th>Stock</th>
+                <th>Quantity</th>
+                <th>Location</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Added By</th>
+                <th>Options</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtereData.length > 0 ? (
+                filtereData.map((s) => (
+                  <tr key={s._id}>
+                    <td>{s.stock}</td>
+                    <td>{s.quantity}</td>
+                    <td>{s.location}</td>
+                    <td>{s.date}</td>
+                    <td>{s.comment}</td>
+                    <td>{s.username}</td>
+                    <td className="text-center">
+                      <Button
+                        key={s._id}
+                        variant="primary"
+                        size="sm"
+                        onClick={() => handleShow(s)}
+                      >
+                        Update
+                      </Button>
+                      <Button
+                        onClick={async () => {
+                          await deleteStock(s._id);
+                          console.log(stocks);
+                          console.log(filtereData);
+                        }}
+                        variant="danger"
+                        size="sm"
+                        className="mx-2 mb-1"
+                      >
+                        Delete
+                      </Button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <div>No Stock</div>
+              )}
+
+              {/*Modal to update stock info*/}
+              <Modal size="lg" show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Update Stock Info</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  {/* Input Block */}
+                  <Container className="pt-2">
+                    <Form onSubmit={handlesubmit}>
+                      <Row className="g-2">
+                        <Col md={4}>
+                          <FloatingLabel
+                            controlId="floatingInputGrid"
+                            label="Stock Name"
+                          >
+                            <Form.Control
+                              type="text"
+                              placeholder=""
+                              value={ustockInput.stock}
+                              required
+                              onChange={uhandlechange}
+                              name="stock"
+                            />
+                          </FloatingLabel>
+                        </Col>
+                        <Col md={4}>
+                          <FloatingLabel
+                            controlId="floatingInputGrid"
+                            label="Date"
+                          >
+                            <Form.Control
+                              type="date"
+                              placeholder=""
+                              value={ustockInput.date}
+                              required
+                              onChange={uhandlechange}
+                              name="date"
+                            />
+                          </FloatingLabel>
+                        </Col>
+                        <Col md={4}>
+                          <FloatingLabel
+                            controlId="floatingInputGrid"
+                            label="Location"
+                          >
+                            <Form.Control
+                              type="text"
+                              placeholder=""
+                              value={ustockInput.location}
+                              required
+                              onChange={uhandlechange}
+                              name="location"
+                            />
+                          </FloatingLabel>
+                        </Col>
+                        <Col md={2}>
+                          <FloatingLabel
+                            controlId="floatingInputGrid"
+                            label="Quantity"
+                          >
+                            <Form.Control
+                              type="number"
+                              placeholder=""
+                              value={ustockInput.quantity}
+                              required
+                              onChange={uhandlechange}
+                              name="quantity"
+                            />
+                          </FloatingLabel>
+                        </Col>
+                        <Col md={6}>
+                          <FloatingLabel
+                            controlId="floatingInputGrid"
+                            label="Comment"
+                          >
+                            <Form.Control
+                              type="text"
+                              placeholder=""
+                              value={ustockInput.comment}
+                              onChange={uhandlechange}
+                              required
+                              name="comment"
+                            />
+                          </FloatingLabel>
+                        </Col>
+                        <Col md={4}>
+                          <FloatingLabel
+                            controlId="floatingInputGrid"
+                            label="Added By"
+                          >
+                            <Form.Control
+                              type="text"
+                              placeholder=""
+                              value={ustockInput.username}
+                              required
+                              onChange={uhandlechange}
+                              name="username"
+                            />
+                          </FloatingLabel>
+                        </Col>
+                      </Row>
+                    </Form>
+                  </Container>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={handleClose}>
+                    Close
+                  </Button>
+                  <Button variant="primary" onClick={handleupdate}>
+                    Save Changes
+                  </Button>
+                </Modal.Footer>
+              </Modal>
+            </tbody>
+          </Table>
+        </Container>
+      </Container>
+    </div>
+  );
+};
+
+export default Stock;

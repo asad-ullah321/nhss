@@ -1,0 +1,13 @@
+
+.navbarlinks{
+    font-weight: bold;
+    color: white;
+}
+
+.navbarlinks:hover{
+    color: white;
+    border-bottom: 2px solid;
+    font-size: 1.2rem;
+    border-color: white;
+}
+

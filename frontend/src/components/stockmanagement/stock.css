@@ -1,0 +1,36 @@
+.stockmanagementlinks {
+  font-weight: bold;
+}
+
+.stockmanagementlinks:hover {
+  color: #36454f;
+
+  border-bottom: 2px solid;
+  font-size: 1.2rem;
+  border-color: #36454f;
+}
+
+
+
+thead {
+  position: sticky;
+  top: 0px; /* 0px if you don't have a navbar, but something is required */
+}
+
+.DateBox{
+  height: 1px;
+}
+
+
+.form-select-sm{
+  height: 4vh;
+  padding-top: 0px;
+  margin-top: 1px;
+}
+
+.form-control-sm{
+  height: 4vh;
+  padding-top: 0px;
+  margin-top: 1px;
+
+}

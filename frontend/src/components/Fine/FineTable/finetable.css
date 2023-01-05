@@ -1,0 +1,13 @@
+.table-container {
+    height: 71.7vh;
+    overflow-y: auto;
+    scrollbar-width: 25px;
+  }
+  
+  thead {
+    position: sticky;
+    top: 0px; /* 0px if you don't have a navbar, but something is required */
+  }
+ option:hover{
+  background-color: white;
+ }

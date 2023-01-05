@@ -1,0 +1,22 @@
+.stockmanagementlinks {
+    color: #36454F;
+    font-weight: bold;
+    
+  }
+  
+.stockmanagementlinks:hover {
+    color: #36454f;
+    font-weight: bolder;
+    border-bottom: 2px solid;
+    font-size: 1.2rem;
+    border-color: #36454f;
+  }
+
+  .stockmanagementlinksactive {
+    color: #36454f;
+    font-weight: bolder;
+    border-bottom: 2px solid;
+    font-size: 1.2rem;
+    border-color: #36454f;
+  }
+  
