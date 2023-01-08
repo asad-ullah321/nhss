@@ -8,6 +8,7 @@ import IssuedStock from './components/IssuedStock/IssuedStock';
 import Fine from './components/Fine/Fine';
 import Lib from './components/Library/Lib';
 import { Attendance } from './components/Attendance/Attendance';
+import Student from './components/manageStudents/Student';
 function App() {
   return (
     <div>
@@ -17,7 +18,7 @@ function App() {
         <Route exact path='/fine' element={<Fine/>}/>
         <Route exact path='/lib' element={<Lib/>} />
         <Route exact path='/attendance' element={<Attendance/>} />
-
+        <Route exact path='/student' element={<Student/>} />
 
 
       </Routes>

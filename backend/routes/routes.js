@@ -6,6 +6,7 @@ const StockContr = require('../controllers/stock.contr')
 const issueStockContr = require('../controllers/issueStock.contr')
 const fineContr = require ('../controllers/fine.contr')
 const libContr = require('../controllers/lib.contr')
+const stuContr = require('../controllers/students.contr')
 //const cookieParser = require("cookie-parser");
 //const session = require('express-session');
 //const cenflix = require("../controllers/cenflixController");
@@ -54,6 +55,11 @@ router.put("/lib", libContr.updateIssuedBook);
 router.patch("/lib", libContr.  updateIssuedBookStatus);
 router.delete("/lib", libContr.deleteIssueBook);
 
+
+router.get('/students', stuContr.fetchClass)
+router.post('/students', stuContr.addStudent)
+router.put('/students', stuContr.updateStudent)
+router.delete('/students', stuContr.deleteStudent)
 
 
 

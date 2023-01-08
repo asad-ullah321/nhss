@@ -37,7 +37,8 @@ export const Attendance = () => {
         return f.class === _class;
       });
       setfilteredStudents(temp);
-      setshowSave(true);
+      if(temp.length > 0)
+        setshowSave(true);
       // console.log(temp);
     }
   };
@@ -60,12 +61,12 @@ export const Attendance = () => {
 
   const viewAttendance = () => {
     console.log(attendance);
-    if (attendance.length > 0) {
+    if (attendance.length > 0 && date!="" && _class!="Class") {
       let temp = attendance.filter((f) => {
         return new Date(f._date).getDate() === new Date(date).getDate();
       });
       temp = temp.filter((f) => {
-        return (f.class = _class);
+        return (f.class === _class);
       });
       setfilteredStudents(temp);
     }
@@ -101,12 +102,15 @@ export const Attendance = () => {
                 className="my-3 me-3 px-3"
               />
 
-              {/* Filter selection for Location */}
+              {/* Filter selection for class */}
               <Form.Select
                 id="Status"
                 onChange={(e) => {
+                  if(e.target.value!=="Class")
+                  setclass(parseInt(e.target.value));
+                  else
                   setclass(e.target.value);
-                  console.log(e.target.value);
+
                 }}
                 value={_class}
                 aria-label="Default select example"

@@ -106,3 +106,28 @@ export const addAttendance = (object) => {
 
 
 
+
+/*<----------Action Creators for Students---------->*/
+export const addStudent = (object) => {
+    return (dispatch)=>{
+        dispatch({type:"addstudent", payload: object});
+    }
+}
+
+/*export const updateBookstatus = (object) => {
+    return (dispatch)=>{
+        dispatch({type:"updateBookstatus", payload: object});
+    }
+}*/
+
+export const deleteStudent = (index) => {
+    return (dispatch)=>{
+        dispatch({type:"deletestudent", payload: index});
+    }
+}
+export const updateStudent = (object) => {
+    return (dispatch)=>{
+        dispatch({type:"updatestudent", payload: object});
+    }
+}
+

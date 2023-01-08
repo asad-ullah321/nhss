@@ -6,7 +6,7 @@
 
 .navbarlinks:hover{
     color: white;
-    border-bottom: 2px solid;
+    border-bottom: 2px solid !important; 
     font-size: 1.2rem;
     border-color: white;
 }

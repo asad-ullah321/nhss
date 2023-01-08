@@ -1,6 +1,6 @@
 import "./navbar.css";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 /*React-Bootstrap Libs for NavBar*/
 import Container from "react-bootstrap/Container";
 
@@ -9,6 +9,7 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 
 const NavBar = () => {
+  const location = useLocation();
   return (
     <div>
       <Navbar bg="dark" expand="lg" variant="dark">
@@ -19,22 +20,25 @@ const NavBar = () => {
             <Nav className="me-auto">
 
 
-              <Link exact to="/" className="text-decoration-none navbarlinks me-3 mt-2 px-2">
+              <Link style={{"borderBottom": location.pathname==="/"?"2px solid":"none"}} exact to="/" className="text-decoration-none navbarlinks me-3 mt-2 px-2">
               <span style={{"color": "white"}}>Stock</span>
               </Link>
 
-              <Link exact to="/fine" className="text-decoration-none navbarlinks me-3 mt-2 px-2">
+              <Link style={{"borderBottom": location.pathname==="/fine"?"2px solid":"none"}} exact to="/fine" className="text-decoration-none navbarlinks me-3 mt-2 px-2">
               <span style={{"color": "white"}}>Fine</span>
               </Link>
 
-              <Link exact to="/lib" className="text-decoration-none navbarlinks me-3 mt-2 px-2">
+              <Link style={{"borderBottom": location.pathname==="/lib"?"2px solid":"none"}} exact to="/lib" className="text-decoration-none navbarlinks me-3 mt-2 px-2">
               <span style={{"color": "white"}}>Library</span>
               </Link>
 
-              <Link exact to="/attendance" className="text-decoration-none navbarlinks me-3 mt-2 px-2">
+              <Link style={{"borderBottom": location.pathname==="/attendance"?"2px solid":"none"}} exact to="/attendance" className="text-decoration-none navbarlinks me-3 mt-2 px-2">
               <span style={{"color": "white"}}>Attendance</span>
               </Link>
 
+              <Link style={{"borderBottom": location.pathname==="/student"?"2px solid":"none"}} exact to="/student" className="text-decoration-none navbarlinks me-3 mt-2 px-2">
+              <span style={{"color": "white"}}>Mangage Student</span>
+              </Link>
 
               <NavDropdown title="Dropdown" id="basic-nav-dropdown">
                 <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
