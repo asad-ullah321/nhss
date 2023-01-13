@@ -21,26 +21,190 @@ export const Attendance = () => {
   const dispatch = useDispatch();
   const { addAttendance } = bindActionCreators(actionCreators, dispatch);
 
-  const [filteredStudents, setfilteredStudents] = useState("");
+  const [filteredStudents, setfilteredStudents] = useState([]);
   const [date, setDate] = useState("");
   const [_class, setclass] = useState("Class");
   const [showSave, setshowSave] = useState(false);
 
   const addNewAttedance = () => {
     if (date != "" && _class != "Class") {
-      let temp = students.map((obj) => ({
-        ...obj,
-        attendance: "-",
-        _date: date,
-      }));
-      temp = temp.filter((f) => {
-        return f.class === _class;
-      });
-      setfilteredStudents(temp);
-      if(temp.length > 0)
-        setshowSave(true);
-      // console.log(temp);
+      setfilteredStudents([]);
+      setshowSave(false);
+      fetch(`http://localhost:5000/nhss/students?class=${_class}`, {
+        method: "get",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+
+          // "auth-token": token,
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      })
+        .then((res) => {
+          console.log(res);
+          //   setresStatus(res.status);
+          if (res.status === 200) return res.json();
+          else throw new Error(res.status);
+        })
+        .then((resBody) => {
+          console.log(resBody.students.length, "count");
+          //setResponse(resBody);
+          if (resBody.students.length > 0) {
+            let temp = resBody.students.map((obj) => ({
+              student_id: obj.student_id,
+              sname: obj.sname,
+              class: obj.class,
+              attendance: "-",
+              date: date,
+              att_id: `${date}${_class}`,
+            }));
+            setfilteredStudents(temp);
+            if (temp.length > 0) setshowSave(true);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
+  };
+  const saveAttendance = () => {
+    const data = JSON.stringify(filteredStudents);
+    console.log("attendance", data);
+    if (date != "" && _class != "Class" && filteredStudents.length > 0) {
+      fetch(
+        `http://localhost:5000/nhss/attendance?class=${_class}&date=${date}`,
+        {
+          method: "post",
+
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            // "auth-token": token,
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: data,
+        }
+      )
+        .then((res) => {
+          if (res.status === 200) return res.json();
+          else throw new Error(res.status);
+        })
+        .then((resBody) => {
+          console.log(resBody);
+          if (resBody.att === 1) {
+            addAttendance(filteredStudents);
+            setfilteredStudents([]);
+            setclass("Class");
+            setDate("");
+            setshowSave(false);
+          }
+        })
+        .catch((err) => {});
+    }
+  };
+
+  const viewAttendance = () => {
+    console.log(attendance);
+    if (date != "" && _class != "Class") {
+      fetch(
+        `http://localhost:5000/nhss/attendance?class=${_class}&date=${date}`,
+        {
+          method: "get",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+
+            // "auth-token": token,
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
+      )
+        .then((res) => {
+          //console.log(res);
+          // setresStatus(res.status);
+          if (res.status === 200) return res.json();
+          else throw new Error(res.status);
+        })
+        .then((resBody) => {
+          console.log(resBody.att.length, "count");
+
+          if (resBody.att.length > 0) {
+            //setResponse(resBody);
+            console.log(resBody.att.length, "count");
+            setfilteredStudents(resBody.att);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+  const deleteAttendance = () => {
+    console.log(attendance);
+    if (date != "" && _class != "Class") {
+      fetch(
+        `http://localhost:5000/nhss/attendance?class=${_class}&date=${date}`,
+        {
+          method: "delete",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+
+            // "auth-token": token,
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
+      )
+        .then((res) => {
+          //console.log(res);
+          // setresStatus(res.status);
+          if (res.status === 200) return res.json();
+          else throw new Error(res.status);
+        })
+        .then((resBody) => {
+          console.log("delete", resBody);
+
+          if (resBody.delete === 1) {
+            //setResponse(resBody);
+
+            setfilteredStudents([]);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
+  const updateAttendance = (e, id) => {
+    const temp = { value: e.target.value, _id: id };
+    const data = JSON.stringify({ attendance: e.target.value, _id: id });
+
+    fetch("http://localhost:5000/nhss/attendance", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        // "auth-token": token,
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: data,
+    })
+      .then((res) => {
+        if (res.status === 200) return res.json();
+        else throw new Error(res.status);
+      })
+      .then((resBody) => {
+        console.log(resBody);
+        if (resBody.update === 1) {
+          let index = filteredStudents.findIndex((s) => s._id === id);
+          let temp = [...filteredStudents];
+          temp[index].attendance = e.target.value;
+          setfilteredStudents(temp);
+          //  console.log(e.target.value, id);
+        }
+      })
+      .catch((err) => {});
   };
 
   const handleAttendanceChange = (e, id) => {
@@ -50,31 +214,6 @@ export const Attendance = () => {
     temp[index].attendance = e.target.value;
     setfilteredStudents(temp);
   };
-
-  const saveAttendance = () => {
-    addAttendance(filteredStudents);
-    setfilteredStudents("");
-    setclass("Class");
-    setDate("");
-    setshowSave(false);
-  };
-
-  const viewAttendance = () => {
-    console.log(attendance);
-    if (attendance.length > 0 && date!="" && _class!="Class") {
-      let temp = attendance.filter((f) => {
-        return new Date(f._date).getDate() === new Date(date).getDate();
-      });
-      temp = temp.filter((f) => {
-        return (f.class === _class);
-      });
-      setfilteredStudents(temp);
-    }
-  };
-
-  useEffect(() => {
-    console.log(filteredStudents);
-  }, [filteredStudents]);
   return (
     <div>
       <NavBar />
@@ -106,11 +245,9 @@ export const Attendance = () => {
               <Form.Select
                 id="Status"
                 onChange={(e) => {
-                  if(e.target.value!=="Class")
-                  setclass(parseInt(e.target.value));
-                  else
-                  setclass(e.target.value);
-
+                  if (e.target.value !== "Class")
+                    setclass(parseInt(e.target.value));
+                  else setclass(e.target.value);
                 }}
                 value={_class}
                 aria-label="Default select example"
@@ -130,11 +267,19 @@ export const Attendance = () => {
                 size="sm"
                 style={{ whiteSpace: "nowrap" }}
                 className="my-2 me-4 ms-1"
-                onClick={() => addNewAttedance()}
+                onClick={addNewAttedance}
               >
                 <img src={addpng} alt="" />
               </Button>
-
+              <Button
+                variant="dark"
+                size="sm"
+                style={{ whiteSpace: "nowrap" }}
+                className="my-2 me-4 ms-1"
+                onClick={deleteAttendance}
+              >
+                Delete Attandance
+              </Button>
               <Button
                 variant="dark"
                 size="sm"
@@ -148,65 +293,79 @@ export const Attendance = () => {
           </Navbar.Collapse>
         </Navbar>
 
-      <div className="table-container mx-5">
-
-        <Table responsive="md" bordered hover variant="light">
-          <thead>
-            <tr>
-              <th>Addmission#</th>
-              <th>Name</th>
-              <th>Date</th>
-              <th>Attendance</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredStudents.length > 0 ? (
-              filteredStudents.map((s) => (
-                <tr key={s._id}>
-                  <td>{s.student_id}</td>
-                  <td>{s.sname}</td>
-                  <td>{s._date}</td>
-                  {showSave ? (
-                    <td>
-                      <Form.Select
-                        id="status"
-                        onChange={(e) => {
-                          handleAttendanceChange(e, s._id);
-                        }}
-                        aria-label="Default select example"
-                        className="status"
-                        size="sm"
-                        name="status"
-                      >
-                        <option>-</option>
-                        <option>A</option>
-                        <option>L</option>
-                      </Form.Select>
-                    </td>
-                  ) : (
-                    <td>{s.attendance}</td>
-                  )}
-                </tr>
-              ))
-            ) : (
-              <div>No Student</div>
-            )}
-          </tbody>
-        </Table>
-        {showSave ? (
-          <Button
-            variant="dark"
-            size="sm"
-            style={{ whiteSpace: "nowrap" }}
-            className="my-2 me-4 ms-1"
-            onClick={() => saveAttendance()}
-          >
-            <img src={savepng} alt="" />
-          </Button>
-        ) : (
-          ""
-        )}
-      </div>
+        <div className="table-container mx-5">
+          <Table responsive="md" bordered hover variant="light">
+            <thead>
+              <tr>
+                <th>Addmission#</th>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Attendance</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredStudents.length > 0 ? (
+                filteredStudents.map((s) => (
+                  <tr key={s._id}>
+                    <td>{s.student_id}</td>
+                    <td>{s.sname}</td>
+                    <td>{date}</td>
+                    {showSave ? (
+                      <td>
+                        <Form.Select
+                          id="status"
+                          onChange={(e) => {
+                            handleAttendanceChange(e, s._id);
+                          }}
+                          aria-label="Default select example"
+                          className="status"
+                          size="sm"
+                          name="status"
+                        >
+                          <option>-</option>
+                          <option>A</option>
+                          <option>L</option>
+                        </Form.Select>
+                      </td>
+                    ) : (
+                      <td>
+                        <Form.Select
+                          id="status"
+                          onChange={(e) => {
+                            updateAttendance(e, s._id);
+                          }}
+                          aria-label="Default select example"
+                          className="status"
+                          size="sm"
+                          name="status"
+                        >
+                          <option>-</option>
+                          <option>A</option>
+                          <option>L</option>
+                        </Form.Select>
+                      </td>
+                    )}
+                  </tr>
+                ))
+              ) : (
+                <div>No Student</div>
+              )}
+            </tbody>
+          </Table>
+          {showSave ? (
+            <Button
+              variant="dark"
+              size="sm"
+              style={{ whiteSpace: "nowrap" }}
+              className="my-2 me-4 ms-1"
+              onClick={() => saveAttendance()}
+            >
+              <img src={savepng} alt="" />
+            </Button>
+          ) : (
+            ""
+          )}
+        </div>
       </Container>
 
       <Footer />

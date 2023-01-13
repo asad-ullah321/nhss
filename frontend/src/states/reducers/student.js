@@ -32,24 +32,24 @@ const student = (state = stock, action) => {
     state = [...temparray];
     console.log(state);
     return state;
-  }
-  /*else if (action.type === "updatestudent...") {
-    let index = state.findIndex((s) => s._id === action.payload.id);
+  } else if (action.type === "updatestudent") {
+    let index = state.findIndex((s) => s._id === action.payload._id);
     let temparray = [...state];
     temparray[index].status = action.payload.value;
     state = [...temparray];
     console.log(state);
     return state;
-  }*/ 
-  else if (action.type === "addstudent") {
-    let temparray = [...state];
-    temparray.push(action.payload);
-    state = [...temparray];
-    console.log(state, "From student  reducer");
-
-    return state;
-  } else console.log(state, "student.js");
+  } else if (action.type === "addstudent") {
+    let already = state.findIndex((s) => s._id === action.payload._id);
+    console.log(already, "fine adding new stock");
+    if (already === -1) {
+      let temparray = [...state];
+      temparray.push(action.payload);
+      state = [...temparray];
+      return state;
+    } else {console.log(state, "student.js");
+    return state;}
+  }
   return state;
 };
-
 export default student;

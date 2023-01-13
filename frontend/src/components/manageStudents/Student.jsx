@@ -25,7 +25,10 @@ const Student = () => {
   const [resStatus, setresStatus] = useState();
   const [response, setResponse] = useState();
   const dispatch = useDispatch();
-  const { addStudent } = bindActionCreators(actionCreators, dispatch);
+  const { addStudent, updateStudent } = bindActionCreators(
+    actionCreators,
+    dispatch
+  );
   const printref = useRef();
 
   const [filteredStudents, setfilteredStudents] = useState("");
@@ -39,25 +42,26 @@ const Student = () => {
 
   useEffect(() => {
     if (_class != "Class" && resStatus != 200) {
-      console.log("filtering students")
+      console.log("filtering students");
       setfilteredStudents("");
       let temp = students;
       console.log(students);
-      temp =  temp.filter((f) => {
+      temp = temp.filter((f) => {
         return f.class === _class;
       });
-      if (temp.length > 0) {console.log("cahed hit") ;setfilteredStudents(temp)}
-      else {
+      if (temp.length > 0) {
+        console.log("cahed hit");
+        setfilteredStudents(temp);
+      } else {
         fetch(`http://localhost:5000/nhss/students?class=${_class}`, {
           method: "get",
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
-            
+
             // "auth-token": token,
             // 'Content-Type': 'application/x-www-form-urlencoded',
           },
-        
         })
           .then((res) => {
             console.log(res);
@@ -66,26 +70,27 @@ const Student = () => {
             else throw new Error(res.status);
           })
           .then((resBody) => {
-            console.log(resBody.students.length,"count")
+            console.log(resBody.students.length, "count");
 
-            if(resBody.students.length > 0)
-            {
-             setResponse(resBody);
-             console.log(resBody.students.length,"count")
-             setfilteredStudents(resBody.students);
+            if (resBody.students.length > 0) {
+              setResponse(resBody);
+              console.log(resBody.students.length, "count");
+              setfilteredStudents(resBody.students);
+            } else {
+              setresStatus("");
             }
-            else {setresStatus("")}
 
             console.log(resBody);
           })
-          .catch((err) => {console.log(err)});
+          .catch((err) => {
+            console.log(err);
+          });
       }
     }
   }, [_class, students]);
-useEffect(()=>console.log(filteredStudents),[filteredStudents])
+  useEffect(() => console.log(filteredStudents), [filteredStudents]);
   /*<------------------------------------------------------------------fetech data------------------------------------------------------------------>*/
 
-  
   useEffect(() => {
     console.log(resStatus, response);
     if (resStatus === 200) {
@@ -99,10 +104,53 @@ useEffect(()=>console.log(filteredStudents),[filteredStudents])
         });
       });
       setresStatus("");
-      setResponse("")
+      setResponse("");
     }
   }, [response && resStatus]);
 
+  let resCode;
+  const promoteBatch = () => {
+    fetch("http://localhost:5000/nhss/students", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+
+        // "auth-token": token,
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    })
+      .then((res) => {
+        console.log(res);
+        resCode = res.status;
+       // setresStatus(res.status);
+        if (res.status === 200) return res.json();
+        else throw new Error(res.status);
+      })
+      .then((resBody) => {
+        console.log(typeof(students), students,"type");
+       
+       
+        if (resCode === 200 && students.length > 0) 
+        {
+        console.log(typeof(students), "type");
+        setclass(_class+1);
+          students.map((obj) => {
+            updateStudent({
+              _id: obj._id,
+              student_id: obj.student_id,
+              sname: obj.sname,
+              class: (obj.class + 1)
+            });
+          });
+        }
+
+
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   /*useEffect(() => {
   console.log("fecth fine requested");
   fetch("http://localhost:5000/nhss/fine", {
@@ -129,8 +177,6 @@ useEffect(()=>console.log(filteredStudents),[filteredStudents])
     };
 }, []);*/
 
-  
-  
   return (
     <div>
       <NavBar />
@@ -152,10 +198,9 @@ useEffect(()=>console.log(filteredStudents),[filteredStudents])
               <Form.Select
                 id="Status"
                 onChange={(e) => {
-                  if(e.target.value!=="Class")
-                  setclass(parseInt(e.target.value));
-                  else
-                  setclass(e.target.value);
+                  if (e.target.value !== "Class")
+                    setclass(parseInt(e.target.value));
+                  else setclass(e.target.value);
 
                   console.log(e.target.value);
                 }}
@@ -189,12 +234,26 @@ useEffect(()=>console.log(filteredStudents),[filteredStudents])
               >
                 Clear
               </Button>*/}
+
+              <Button
+                variant="dark"
+                size=""
+                style={{ whiteSpace: "nowrap", height: "2%" }}
+                className="mt-3  py-2 ms-2"
+                onClick={promoteBatch}
+              >
+                Promote Batch
+              </Button>
+
+              {/* Input component it will ad new stock via modal */}
+              <InputBlock />
+
               <ReactToPrint
                 trigger={() => (
                   <Button
                     variant="dark"
                     size=""
-                    style={{ whiteSpace: "nowrap", "height":"2%" }}
+                    style={{ whiteSpace: "nowrap", height: "2%" }}
                     className="mt-3  py-2 ms-2"
                   >
                     Print
@@ -202,9 +261,6 @@ useEffect(()=>console.log(filteredStudents),[filteredStudents])
                 )}
                 content={() => printref.current}
               />
-
-              {/* Input component it will ad new stock via modal */}
-              <InputBlock />
             </Nav>
           </Navbar.Collapse>
         </Container>
