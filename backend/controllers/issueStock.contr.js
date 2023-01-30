@@ -5,16 +5,16 @@ const fetchall = (req, res) => {
     issueStock
       .find()
       .then((r) => {
-        res.status(200).json({ stock: r, message: "fetched successfully" });
+        res.status(200).json({ stock: r, message: "Issued stock fetched successfully" });
       })
       .catch((error) => {
         console.log(error);
-        return res.status(500).json({ message: "internal server error" });
+        return res.status(500).json({ message: "Internal server error" });
       });
   } catch {
     console.log("e2");
 
-    return res.status(500).json({ message: "internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -36,17 +36,17 @@ const addIssueStock = (req, res) => {
       })
       .then((r) => {
         console.log(r);
-        res.status(200).json({ stock: r, message: "added successfully" });
+        res.status(200).json({ stock: r, message: "Issued Stock record added successfully" });
       })
       .catch((error) => {
         console.log(error);
-        return res.status(500).json({ message: "internal server error" });
+        return res.status(500).json({ message: "Internal server error" });
       });
   } catch {
     () => {
       console.log("e2");
 
-      return res.status(500).json({ message: "internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     };
   }
 };
@@ -74,17 +74,17 @@ const updateIssueStock = (req, res) => {
         console.log(r);
         res
           .status(200)
-          .json({ update: 1, stock: r, message: "updated successfully" });
+          .json({ update: 1, stock: r, message: "Issued Stock record updated successfully" });
       })
       .catch((error) => {
         console.log(error);
-        return res.status(500).json({ message: "internal server error" });
+        return res.status(500).json({ message: "Internal server error" });
       });
   } catch {
     () => {
       console.log("e2");
 
-      return res.status(500).json({ message: "internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     };
   }
 };
@@ -105,7 +105,7 @@ const updateIssueStockStatus = (req, res) => {
           console.log(r);
           res
             .status(200)
-            .json({ update: 1, stock: r, message: "status updated successfully" });
+            .json({ update: 1, stock: r, message: "Issued Stock record's status updated successfully" });
         })
         .catch((error) => {
           console.log(error);
@@ -130,17 +130,17 @@ const deleteIssueStock = (req, res) => {
         console.log(r);
         res
           .status(200)
-          .json({ delete: 1, stock: r, message: "deleted successfully" });
+          .json({ delete: 1, stock: r, message: "Issued Stock record deleted successfully" });
       })
       .catch((error) => {
         console.log(error);
-        return res.status(500).json({ message: "internal server error" });
+        return res.status(500).json({ message: "Internal server error" });
       });
   } catch {
     () => {
       console.log("e2");
 
-      return res.status(500).json({ message: "internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     };
   }
 };

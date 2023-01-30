@@ -131,3 +131,6 @@ export const updateStudent = (object) => {
     }
 }
 
+export const UpdateNotification=(object)=>{
+    return (dispatch)=>{dispatch({type:"updateNotification",payload: object})}
+}

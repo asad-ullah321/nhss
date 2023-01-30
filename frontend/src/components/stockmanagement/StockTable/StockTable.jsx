@@ -13,7 +13,7 @@ import Button from "react-bootstrap/Button";
 
 const StockTable = React.forwardRef((props, ref) => {
   const dispatch = useDispatch();
-  const { deleteStock, updateStock } = bindActionCreators(
+  const { deleteStock, updateStock,UpdateNotification } = bindActionCreators(
     actionCreators,
     dispatch
   );
@@ -71,10 +71,15 @@ const StockTable = React.forwardRef((props, ref) => {
         {
           updateStock(ustockInput);
           handleClose();
+          UpdateNotification({message:resBody.message, status:1, show:true});
+
         }
 
       })
-      .catch((err) => {});
+      .catch((err) => {
+        UpdateNotification({message:"Internal server error occured", status:0, show:true});
+
+      });
 
    
   };
@@ -105,11 +110,15 @@ const StockTable = React.forwardRef((props, ref) => {
         if (resBody.delete === 1) 
         {
           deleteStock(id);
+          UpdateNotification({message:resBody.message, status:1, show:true});
         
         }
 
       })
-      .catch((err) => {});
+      .catch((err) => {
+        UpdateNotification({message:"Internal server error occured", status:0, show:true});
+
+      });
 
     
   }

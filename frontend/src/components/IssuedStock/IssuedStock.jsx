@@ -4,6 +4,8 @@ import StockNavbar from "../StockNavbar/StockNavbar";
 import "./issuedstock.css";
 import InputBlock from "./Input/Input";
 import StockTable from "./StockTable/StockTable";
+import Toaster from "../Toaster/Toaster";
+
 
 import { useDispatch } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -22,7 +24,7 @@ import Footer from "../footer/Footer";
 const IssuedStock = () => {
   const dispatch = useDispatch();
   const stocks = useSelector((state) => state.issuedstocks);
-  const { issueStock } = bindActionCreators(actionCreators, dispatch);
+  const { issueStock, UpdateNotification } = bindActionCreators(actionCreators, dispatch);
   const [resStatus, setresStatus] = useState();
   const [response, setResponse] = useState();
 
@@ -66,8 +68,13 @@ const IssuedStock = () => {
       })
       .then((resBody) => {
         setResponse(resBody);
+        UpdateNotification({message:resBody.message, status:1, show:true});
+
       })
-      .catch((err) => {});
+      .catch((err) => {
+        UpdateNotification({message:"Internal server error occured", status:0, show:true});
+
+      });
 
       return () => {
         console.log('The component has mounted!');
@@ -380,6 +387,8 @@ const IssuedStock = () => {
         <StockTable filtereData2={filtereData2} />
       </Container>
       <Footer />
+      <Toaster/>
+
     </div>
   );
 };

@@ -9,6 +9,7 @@ import Fine from './components/Fine/Fine';
 import Lib from './components/Library/Lib';
 import { Attendance } from './components/Attendance/Attendance';
 import Student from './components/manageStudents/Student';
+
 function App() {
   return (
     <div>

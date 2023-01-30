@@ -5,6 +5,7 @@ import { bindActionCreators } from "redux";
 import { actionCreators } from "../../../states";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import Toaster from "../../Toaster/Toaster";
 
 import { Nav, Row, Col, FloatingLabel, Table, Modal } from "react-bootstrap";
 import Container from "react-bootstrap/Container";
@@ -13,7 +14,7 @@ import Button from "react-bootstrap/Button";
 
 const FineTable = React.forwardRef((props, ref) => {
   const dispatch = useDispatch();
-  const { updateFinestatus, updateissuedFine, deleteissuedFine } =
+  const { updateFinestatus, updateissuedFine, deleteissuedFine, UpdateNotification } =
     bindActionCreators(actionCreators, dispatch);
 
   useEffect(
@@ -73,9 +74,14 @@ const FineTable = React.forwardRef((props, ref) => {
         if (resBody.update === 1) {
           updateissuedFine(ustockInput);
           handleClose();
+          UpdateNotification({message:resBody.message, status:1, show:true});
+
         }
       })
-      .catch((err) => {});
+      .catch((err) => {
+        UpdateNotification({message:"Internal server error occured", status:0, show:true});
+
+      });
   };
 
 
@@ -105,10 +111,14 @@ const FineTable = React.forwardRef((props, ref) => {
        if (resBody.update === 1) {
         updateFinestatus(temp);
        //  console.log(e.target.value, id);
-         
+       UpdateNotification({message:resBody.message, status:1, show:true});
+
        }
      })
-     .catch((err) => {});
+     .catch((err) => {
+      UpdateNotification({message:"Internal server error occured", status:0, show:true});
+
+     });
   };
 
 
@@ -137,11 +147,15 @@ const FineTable = React.forwardRef((props, ref) => {
         if (resBody.delete === 1) 
         {
           deleteissuedFine(id);
-        
+          UpdateNotification({message:resBody.message, status:1, show:true});
+
         }
 
       })
-      .catch((err) => {});
+      .catch((err) => {
+        UpdateNotification({message:"Internal server error occured", status:0, show:true});
+
+      });
 
     
   }

@@ -5,7 +5,7 @@ const fetchall = (req, res) => {
     lib
       .find()
       .then((r) => {
-        res.status(200).json({ lib: r, message: "fetched successfully" });
+        res.status(200).json({ lib: r, message: "Books record fetched successfully" });
       })
       .catch((error) => {
         console.log(error);
@@ -36,7 +36,7 @@ const issueBook = (req, res) => {
       })
       .then((r) => {
         console.log(r);
-        res.status(200).json({ lib: r, message: "added successfully" });
+        res.status(200).json({ lib: r, message: "Book record added successfully" });
       })
       .catch((error) => {
         console.log(error);
@@ -74,7 +74,7 @@ const updateIssuedBook = (req, res) => {
         console.log(r);
         res
           .status(200)
-          .json({ update: 1, lib: r, message: "updated successfully" });
+          .json({ update: 1, lib: r, message: "Book record updated successfully" });
       })
       .catch((error) => {
         console.log(error);
@@ -105,7 +105,7 @@ const updateIssuedBookStatus = (req, res) => {
           console.log(r);
           res
             .status(200)
-            .json({ update: 1, lib: r, message: "status updated successfully" });
+            .json({ update: 1, lib: r, message: "Book status updated successfully" });
         })
         .catch((error) => {
           console.log(error);
@@ -130,7 +130,7 @@ const deleteIssueBook = (req, res) => {
         console.log(r);
         res
           .status(200)
-          .json({ delete: 1, lib: r, message: "deleted successfully" });
+          .json({ delete: 1, lib: r, message: "Book record deleted successfully" });
       })
       .catch((error) => {
         console.log(error);

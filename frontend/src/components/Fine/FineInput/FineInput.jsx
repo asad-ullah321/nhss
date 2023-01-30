@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+import Toaster from "../../Toaster/Toaster";
 
 import { Row, Col, FloatingLabel, Container, Modal } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
@@ -11,7 +12,7 @@ import { actionCreators } from "../../../states";
 
 const InputBlock = () => {
   const dispatch = useDispatch();
-  const { issueFine } = bindActionCreators(actionCreators, dispatch);
+  const { issueFine, UpdateNotification } = bindActionCreators(actionCreators, dispatch);
   const [fineInput, setFinesinput] = useState({
     student_id: "",
     amount: "",
@@ -68,8 +69,13 @@ const InputBlock = () => {
           status: resBody.fine.status,
         });
         handleClose();
+        UpdateNotification({message:resBody.message, status:1, show:true});
+
       })
-      .catch((err) => {});
+      .catch((err) => {
+        UpdateNotification({message:"Internal server error occured", status:0, show:true});
+
+      });
 
     console.log(temp);
     setFinesinput({

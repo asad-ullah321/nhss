@@ -8,7 +8,7 @@ const fetchClass = (req, res) => {
         .then((r) => {
           res
             .status(200)
-            .json({ students: r, message: "fetched successfully" });
+            .json({ students: r, message: "Students record fetched successfully" });
         })
         .catch((error) => {
           console.log(error);
@@ -38,7 +38,7 @@ const addStudent = (req, res) => {
         .then((r) => {
           res
             .status(200)
-            .json({ students: r, message: "student added successfully" });
+            .json({ students: r, message: "Student record added successfully" });
         })
         .catch((error) => {
           console.log(error);
@@ -68,7 +68,7 @@ const updateStudent = (req, res) => {
         console.log(r);
         res
           .status(200)
-          .json({ update: 1, students: r, message: "updated successfully" });
+          .json({ update: 1, students: r, message: "Student record updated successfully" });
       })
       .catch((error) => {
         console.log(error);
@@ -92,7 +92,7 @@ const deleteStudent = (req, res) => {
         console.log(r);
         res
           .status(200)
-          .json({ delete: 1, students: r, message: "deleted successfully" });
+          .json({ delete: 1, students: r, message: "Student record deleted successfully" });
       })
       .catch((error) => {
         console.log(error);
@@ -121,7 +121,7 @@ const promoteBatch = (req, res) => {
             if (r.acknowledged) {
             res
               .status(200)
-              .json({ promote: 1, tenPassCount: r2.deletedCount, message: "promoted successfully" });
+              .json({ promote: 1, tenPassCount: r2.deletedCount, message: "Batch promoted successfully" });
             }
           });
         }

@@ -5,16 +5,16 @@ const fetchall = (req, res) => {
     fine
       .find()
       .then((r) => {
-        res.status(200).json({ fine: r, message: "fetched successfully" });
+        res.status(200).json({fetched: 1, fine: r, message: "Fines fetched successfully" });
       })
       .catch((error) => {
         console.log(error);
-        return res.status(500).json({ message: "internal server error" });
+        return res.status(500).json({fetched: 0, message: "Internal server error" });
       });
   } catch {
     console.log("e2");
 
-    return res.status(500).json({ message: "internal server error" });
+    return res.status(500).json({fetched: 0, message: "Internal server error" });
   }
 };
 
@@ -37,17 +37,17 @@ const addFine = (req, res) => {
       })
       .then((r) => {
         console.log(r);
-        res.status(200).json({ fine: r, message: "added successfully" });
+        res.status(200).json({fine: r, message: "Fine added successfully" });
       })
       .catch((error) => {
         console.log(error);
-        return res.status(500).json({ message: "internal server error" });
+        return res.status(500).json({ message: "Internal server error" });
       });
   } catch {
     () => {
       console.log("e2");
 
-      return res.status(500).json({ message: "internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     };
   }
 };
@@ -76,17 +76,17 @@ const updateFine = (req, res) => {
         console.log(r);
         res
           .status(200)
-          .json({ update: 1, fine: r, message: "updated successfully" });
+          .json({ update: 1, fine: r, message: "Fine updated successfully" });
       })
       .catch((error) => {
         console.log(error);
-        return res.status(500).json({ message: "internal server error" });
+        return res.status(500).json({ message: "Internal server error" });
       });
   } catch {
     () => {
       console.log("e2");
 
-      return res.status(500).json({ message: "internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     };
   }
 };
@@ -107,17 +107,17 @@ const updateFineStatus = (req, res) => {
           console.log(r);
           res
             .status(200)
-            .json({ update: 1, fine: r, message: "status updated successfully" });
+            .json({ update: 1, fine: r, message: "Fine status updated successfully" });
         })
         .catch((error) => {
           console.log(error);
-          return res.status(500).json({ message: "internal server error" });
+          return res.status(500).json({ message: "Internal server error" });
         });
     } catch {
       () => {
         console.log("e2");
   
-        return res.status(500).json({ message: "internal server error" });
+        return res.status(500).json({ message: "Internal server error" });
       };
     }
   };
@@ -132,17 +132,17 @@ const deleteFine = (req, res) => {
         console.log(r);
         res
           .status(200)
-          .json({ delete: 1, fine: r, message: "deleted successfully" });
+          .json({ delete: 1, fine: r, message: "Fine deleted successfully" });
       })
       .catch((error) => {
         console.log(error);
-        return res.status(500).json({ message: "internal server error" });
+        return res.status(500).json({ message: "Internal server error" });
       });
   } catch {
     () => {
       console.log("e2");
 
-      return res.status(500).json({ message: "internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     };
   }
 };

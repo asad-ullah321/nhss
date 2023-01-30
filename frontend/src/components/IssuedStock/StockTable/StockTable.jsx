@@ -13,8 +13,9 @@ import Button from "react-bootstrap/Button";
 import { deleteStock } from "../../../states/action-creators";
 
 const StockTable = ({ filtereData2 }) => {
+  const notification = useSelector((state) => state.notification);
   const dispatch = useDispatch();
-  const { updatestatus, updateissuedStock, deleteissuedStock } =
+  const { updatestatus, updateissuedStock, deleteissuedStock, UpdateNotification } =
     bindActionCreators(actionCreators, dispatch);
 
   useEffect(
@@ -25,7 +26,7 @@ const StockTable = ({ filtereData2 }) => {
     _id: "",
     date: "",
     stock: "",
-    To: "",
+    To: "",  
     comment: "",
     issuedby: "",
     quantity: "",
@@ -73,9 +74,14 @@ const StockTable = ({ filtereData2 }) => {
         if (resBody.update === 1) {
           updateissuedStock(ustockInput);
           handleClose();
+          UpdateNotification({message:resBody.message, status:1, show:true});
+
         }
       })
-      .catch((err) => {});
+      .catch((err) => {
+        UpdateNotification({message:"Internal server error occured", status:0, show:true});
+
+      });
   };
   const handleStatusChange = (e, id) => {
     console.log(e.target.value, id);
@@ -101,10 +107,14 @@ const StockTable = ({ filtereData2 }) => {
       if (resBody.update === 1) {
         updatestatus(temp);
       //  console.log(e.target.value, id);
-        
+      UpdateNotification({message:resBody.message, status:1, show:true});
+
       }
     })
-    .catch((err) => {});
+    .catch((err) => {
+      UpdateNotification({message:"Internal server error occured", status:0, show:true});
+
+    });
   };
   const handledelete = (id)=>{
     const data = JSON.stringify({_id:id});
@@ -131,11 +141,16 @@ const StockTable = ({ filtereData2 }) => {
         if (resBody.delete === 1) 
         {
           deleteissuedStock(id);
+          UpdateNotification({message:resBody.message, status:1, show:true});
+
         
         }
 
       })
-      .catch((err) => {});
+      .catch((err) => {
+        UpdateNotification({message:"Internal server error occured", status:0, show:true});
+
+      });
 
     
   }

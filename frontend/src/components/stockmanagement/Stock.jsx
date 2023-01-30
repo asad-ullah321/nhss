@@ -17,13 +17,14 @@ import Navbar from "react-bootstrap/Navbar";
 import { NavDropdown, InputGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Footer from "../footer/Footer";
+import Toaster from "../Toaster/Toaster";
 
 const Stock = () => {
   const stocks = useSelector((state) => state.stocks);
   const [resStatus, setresStatus] = useState();
   const [response, setResponse] = useState();
   const dispatch = useDispatch();
-  const { addStock } = bindActionCreators(actionCreators, dispatch);
+  const { addStock,UpdateNotification } = bindActionCreators(actionCreators, dispatch);
 
   const [filtereData, setfiltereData] = useState(stocks);
   const [filtereData2, setfiltereData2] = useState(stocks);
@@ -63,8 +64,13 @@ const Stock = () => {
       })
       .then((resBody) => {
         setResponse(resBody);
+        UpdateNotification({message:resBody.message, status:1, show:true});
+
       })
-      .catch((err) => {});
+      .catch((err) => {
+        UpdateNotification({message:"Internal server error occured", status:0, show:true});
+
+      });
 
       return () => {
         console.log('The component has mounted!');
@@ -340,6 +346,7 @@ const Stock = () => {
         <StockTable filtereData2={filtereData2} />
       </Container>
       <Footer />
+      <Toaster/>
     </div>
   );
 };

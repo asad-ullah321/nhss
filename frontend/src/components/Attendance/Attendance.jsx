@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import NavBar from "../Navbar/Navbar";
 import Footer from "../footer/Footer";
+import Toaster from "../Toaster/Toaster";
 import { useState } from "react";
 import "./attendance.css";
 
@@ -18,18 +19,24 @@ import { actionCreators } from "../../states";
 export const Attendance = () => {
   const students = useSelector((state) => state.students);
   const attendance = useSelector((state) => state.Attendance);
+  const notification = useSelector((state) => state.notification);
+
   const dispatch = useDispatch();
-  const { addAttendance } = bindActionCreators(actionCreators, dispatch);
+  const { addAttendance, UpdateNotification } = bindActionCreators(actionCreators, dispatch);
 
   const [filteredStudents, setfilteredStudents] = useState([]);
   const [date, setDate] = useState("");
   const [_class, setclass] = useState("Class");
   const [showSave, setshowSave] = useState(false);
 
+
+//  const [notification, setNotification]= useState({message:"", status:0});
+
   const addNewAttedance = () => {
     if (date != "" && _class != "Class") {
       setfilteredStudents([]);
       setshowSave(false);
+
       fetch(`http://localhost:5000/nhss/students?class=${_class}`, {
         method: "get",
         headers: {
@@ -56,17 +63,24 @@ export const Attendance = () => {
               class: obj.class,
               attendance: "-",
               date: date,
-              att_id: `${date}${_class}`,
             }));
             setfilteredStudents(temp);
-            if (temp.length > 0) setshowSave(true);
+            if (temp.length > 0){ 
+              UpdateNotification({message:resBody.message, status:1, show:true});
+            
+              setshowSave(true)};
           }
         })
         .catch((err) => {
+          UpdateNotification({message:"Internal server error occured", status:0, show:true});
+          
           console.log(err);
         });
     }
   };
+
+
+
   const saveAttendance = () => {
     const data = JSON.stringify(filteredStudents);
     console.log("attendance", data);
@@ -97,11 +111,23 @@ export const Attendance = () => {
             setclass("Class");
             setDate("");
             setshowSave(false);
+            UpdateNotification({message:resBody.message, status:1, show:true});
+
+            
+          }
+          else
+          {
+            UpdateNotification({message:resBody.message, status:0, show:true});
           }
         })
-        .catch((err) => {});
+        .catch((err) => {
+          UpdateNotification({message:"Internal server error occured", status:0, show:true});
+    
+        });
     }
   };
+
+
 
   const viewAttendance = () => {
     console.log(attendance);
@@ -132,13 +158,19 @@ export const Attendance = () => {
             //setResponse(resBody);
             console.log(resBody.att.length, "count");
             setfilteredStudents(resBody.att);
+            UpdateNotification({message:resBody.message, status:1, show:true});
+
           }
         })
         .catch((err) => {
+          UpdateNotification({message:"Internal server error occured", status:0, show:true});
+
           console.log(err);
         });
     }
   };
+
+
   const deleteAttendance = () => {
     console.log(attendance);
     if (date != "" && _class != "Class") {
@@ -166,11 +198,15 @@ export const Attendance = () => {
 
           if (resBody.delete === 1) {
             //setResponse(resBody);
+            UpdateNotification({message:resBody.message, status:1, show:true});
 
             setfilteredStudents([]);
+            setshowSave(false);
           }
         })
         .catch((err) => {
+          UpdateNotification({message:"Internal server error occured", status:0, show:true});
+
           console.log(err);
         });
     }
@@ -202,9 +238,17 @@ export const Attendance = () => {
           temp[index].attendance = e.target.value;
           setfilteredStudents(temp);
           //  console.log(e.target.value, id);
+          UpdateNotification({message:resBody.message, status:1, show:true});
+
+
         }
       })
-      .catch((err) => {});
+      .catch((err) => {
+        UpdateNotification({message:"Internal server error occured", status:0, show:true
+      });
+
+
+      });
   };
 
   const handleAttendanceChange = (e, id) => {
@@ -369,6 +413,8 @@ export const Attendance = () => {
       </Container>
 
       <Footer />
+      <Toaster/>
+
     </div>
   );
 };

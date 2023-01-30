@@ -11,7 +11,7 @@ import { actionCreators } from "../../../states";
 
 const InputBlock = () => {
   const dispatch = useDispatch();
-  const { issueBook } = bindActionCreators(actionCreators, dispatch);
+  const { issueBook,UpdateNotification } = bindActionCreators(actionCreators, dispatch);
   const [bookInput, setBookinput] = useState({
     student_id: "",
     bookName: "",
@@ -64,10 +64,15 @@ const InputBlock = () => {
           duedate: duedate,
           status: "Issued",
         });
-        
+        UpdateNotification({message:resBody.message, status:1, show:true});
+
         handleClose();
       })
-      .catch((err) => {});
+      .catch((err) => {
+        UpdateNotification({message:"Internal server error occured", status:0, show:true});
+
+
+      });
 
 
   

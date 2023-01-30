@@ -1,15 +1,4 @@
-const Books = [
- 
-    {
-      _id: 22,
-      student_id:"915M",
-      bookName:"Pak Studies",
-      status:"Issued",
-      date:"2022-08-01",
-      duedate:"2022-08-01",
-    }
-   
-  ];
+const Books = [];
   
   const LibReducer = (state = Books, action) => {
     console.log(state, "fine.js");

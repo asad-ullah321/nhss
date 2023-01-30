@@ -16,13 +16,14 @@ import Navbar from "react-bootstrap/Navbar";
 import { NavDropdown, InputGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Footer from "../footer/Footer";
+import Toaster from "../Toaster/Toaster";
 
 const Lib = () => {
   const books = useSelector((state) => state.books);
   const [resStatus, setresStatus] = useState();
   const [response, setResponse] = useState();
   const dispatch = useDispatch();
-  const { issueBook } = bindActionCreators(actionCreators, dispatch);
+  const { issueBook, UpdateNotification } = bindActionCreators(actionCreators, dispatch);
 
 
 
@@ -72,8 +73,13 @@ useEffect(() => {
     })
     .then((resBody) => {
       setResponse(resBody);
+      UpdateNotification({message:resBody.message, status:1, show:true});
+
     })
-    .catch((err) => {});
+    .catch((err) => {
+      UpdateNotification({message:"Internal server error occured", status:0, show:true});
+
+    });
 
     return () => {
       console.log('The component has mounted!');
@@ -381,7 +387,7 @@ useEffect(() => {
 
       </Container>
       <Footer/>
-
+      <Toaster/>
     </div>
   );
 };

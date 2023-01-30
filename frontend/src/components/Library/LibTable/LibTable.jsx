@@ -15,7 +15,7 @@ import Button from "react-bootstrap/Button";
 const LibTable =React.forwardRef( (props, ref) => {
 
   const dispatch = useDispatch();
-  const { updateBookstatus, updateissuedBook, deleteissuedBook } =
+  const { updateBookstatus, updateissuedBook, deleteissuedBook, UpdateNotification } =
     bindActionCreators(actionCreators, dispatch);
 
   useEffect(
@@ -74,9 +74,14 @@ const LibTable =React.forwardRef( (props, ref) => {
         if (resBody.update === 1) {
           updateissuedBook(ustockInput);
           handleClose();
+          UpdateNotification({message:resBody.message, status:1, show:true});
+
         }
       })
-      .catch((err) => {});
+      .catch((err) => {
+        UpdateNotification({message:"Internal server error occured", status:0, show:true});
+
+      });
 
 
     handleClose();
@@ -109,10 +114,14 @@ const LibTable =React.forwardRef( (props, ref) => {
        if (resBody.update === 1) {
         updateBookstatus(temp);
        //  console.log(e.target.value, id);
+       UpdateNotification({message:resBody.message, status:1, show:true});
          
        }
      })
-     .catch((err) => {});
+     .catch((err) => {
+      UpdateNotification({message:"Internal server error occured", status:0, show:true});
+
+     });
 
   };
 
@@ -142,11 +151,16 @@ const LibTable =React.forwardRef( (props, ref) => {
         if (resBody.delete === 1) 
         {
           deleteissuedBook(id);
+          UpdateNotification({message:resBody.message, status:1, show:true});
         
         }
 
       })
-      .catch((err) => {});
+      .catch((err) => {
+        UpdateNotification({message:"Internal server error occured", status:0, show:true});
+
+
+      });
 
     
   }

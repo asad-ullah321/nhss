@@ -21,7 +21,7 @@ import { useSelector } from "react-redux";
 const InputBlock = () => {
   const dispatch = useDispatch();
   const [resStatus, setresStatus] = useState();
-  const { addStock } = bindActionCreators(actionCreators, dispatch);
+  const { addStock,UpdateNotification } = bindActionCreators(actionCreators, dispatch);
   const [stockInput, setStocksinput] = useState({
     date: "",
     stock: "",
@@ -68,10 +68,14 @@ const InputBlock = () => {
             _id:resBody.stock._id,
           });
           handleClose();
-          
+          UpdateNotification({message:resBody.message, status:1, show:true});
+
         
       })
-      .catch((err) => {});
+      .catch((err) => {
+        UpdateNotification({message:"Internal server error occured", status:0, show:true});
+
+      });
 
     
     setStocksinput({

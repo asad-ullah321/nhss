@@ -5,7 +5,7 @@ const fetchall = (req, res) => {
     stock
       .find()
       .then((r) => {
-        res.status(200).json({ stock: r, message: "fetched successfully" });
+        res.status(200).json({ stock: r, message: "Stock record fetched successfully" });
       })
       .catch((error) => {
         console.log(error);
@@ -35,7 +35,7 @@ const addStock = (req, res) => {
       })
       .then((r) => {
         console.log(r);
-        res.status(200).json({ stock: r, message: "added successfully" });
+        res.status(200).json({ stock: r, message: "Stock record added successfully" });
       })
       .catch((error) => {
         console.log(error);
@@ -68,7 +68,7 @@ const updateStock =(req, res)=>{
           })
           .then((r) => {
             console.log(r);
-            res.status(200).json({ update: 1,stock: r, message: "updated successfully" });
+            res.status(200).json({ update: 1,stock: r, message: "Stock record updated successfully" });
           })
           .catch((error) => {
             console.log(error);
@@ -92,7 +92,7 @@ const deleteStock = (req, res)=>{
           .deleteOne({_id: req.body._id})
           .then((r) => {
             console.log(r);
-            res.status(200).json({ delete: 1,stock: r, message: "deleted successfully" });
+            res.status(200).json({ delete: 1,stock: r, message: "Stock record deleted successfully" });
           })
           .catch((error) => {
             console.log(error);

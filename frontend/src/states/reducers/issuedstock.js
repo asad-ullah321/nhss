@@ -1,25 +1,4 @@
-const stock = [
-  {
-    _id: 1,
-    stock: "Chairs",
-    To: "Noor-Block Store",
-    comment: "extra chairs",
-    issuedby: "Qamer Shb",
-    date: "2022-08-01",
-    quantity: 12,
-    status: "Issued",
-  },
-  {
-    _id: 2,
-    stock: "Chairs",
-    To: "Noor-Block Store",
-    comment: "extra chairs",
-    issuedby: "Qamer Shb",
-    date: "2022-08-02",
-    quantity: 12,
-    status: "Returned",
-  },
-];
+const stock = [];
 
 const issuedstocksReducer = (state = stock, action) => {
   if (action.type === "deleteissuedStock") {

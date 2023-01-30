@@ -12,7 +12,7 @@ import { actionCreators } from "../../../states";
 const InputBlock = () => {
   const dispatch = useDispatch();
   const { addStudent } = bindActionCreators(actionCreators, dispatch);
-  const [studentInput, setstudentsinput] = useState({
+  const [studentInput, setstudentsinput,UpdateNotification] = useState({
     student_id: "",
     sname: "",
     class: ""
@@ -58,8 +58,13 @@ const InputBlock = () => {
      
         });
         handleClose();
+        UpdateNotification({message:resBody.message, status:1, show:true});
+
       })
-      .catch((err) => {});
+      .catch((err) => {
+        UpdateNotification({message:"Internal server error occured", status:0, show:true});
+
+      });
 
     console.log(temp);
     setstudentsinput({

@@ -3,6 +3,7 @@ import ReactToPrint from "react-to-print";
 import NavBar from "../Navbar/Navbar";
 import InputBlock from "./FineInput/FineInput";
 import FineTable from "./FineTable/FineTable";
+import Toaster from "../Toaster/Toaster";
 
 import Footer from "../footer/Footer";
 import "./fine.css";
@@ -21,11 +22,16 @@ import { NavDropdown, InputGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 const Fine = () => {
+ // const [notification, setNotification]= useState({message:"", status:0});
+
+
   const fines = useSelector((state) => state.fines);
+  const notification = useSelector((state) => state.notification);
+
   const [resStatus, setresStatus] = useState();
   const [response, setResponse] = useState();
   const dispatch = useDispatch();
-  const { issueFine } = bindActionCreators(actionCreators, dispatch);
+  const { issueFine, UpdateNotification } = bindActionCreators(actionCreators, dispatch);
   const printref = useRef();
 
   const [filtereData, setfiltereData] = useState(fines);
@@ -78,8 +84,13 @@ useEffect(() => {
     })
     .then((resBody) => {
       setResponse(resBody);
+      UpdateNotification({message:resBody.message, status:1, show:true});
+
     })
-    .catch((err) => {});
+    .catch((err) => {
+      UpdateNotification({message:"Internal server error occured", status:0, show:true});
+
+    });
 
     return () => {
       console.log('The component has mounted!');
@@ -475,6 +486,9 @@ useEffect(() => {
       />
 
       <Footer />
+
+      <Toaster />
+
     </div>
   );
 };

@@ -12,7 +12,7 @@ import { actionCreators } from "../../../states";
 
 const InputBlock = () => {
   const dispatch = useDispatch();
-  const { issueStock } = bindActionCreators(actionCreators, dispatch);
+  const { issueStock,UpdateNotification } = bindActionCreators(actionCreators, dispatch);
   const [stockInput, setStocksinput] = useState({
     date: "",
     stock: "",
@@ -25,7 +25,7 @@ const InputBlock = () => {
 
   /* For new Stock input */
   const handlesubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault();   
     const temp = {
       stock: stockInput.stock,
       To: stockInput.To,
@@ -94,10 +94,15 @@ const InputBlock = () => {
             
           })
           handleClose();
+          UpdateNotification({message:resBody.message, status:1, show:true});
+
           
         
       })
-      .catch((err) => {});
+      .catch((err) => {
+        UpdateNotification({message:"Internal server error occured", status:0, show:true});
+
+      });
 
 
 

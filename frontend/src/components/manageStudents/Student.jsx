@@ -19,13 +19,14 @@ import { Nav, Row, Col, FloatingLabel, Table, Modal } from "react-bootstrap";
 import Navbar from "react-bootstrap/Navbar";
 import { NavDropdown, InputGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import Toaster from "../Toaster/Toaster";
 
 const Student = () => {
   const students = useSelector((state) => state.students);
   const [resStatus, setresStatus] = useState();
   const [response, setResponse] = useState();
   const dispatch = useDispatch();
-  const { addStudent, updateStudent } = bindActionCreators(
+  const { addStudent, updateStudent, UpdateNotification } = bindActionCreators(
     actionCreators,
     dispatch
   );
@@ -79,10 +80,13 @@ const Student = () => {
             } else {
               setresStatus("");
             }
+            UpdateNotification({message:resBody.message, status:1, show:true});
 
             console.log(resBody);
           })
           .catch((err) => {
+            UpdateNotification({message:"Internal server error occured", status:0, show:true});
+
             console.log(err);
           });
       }
@@ -129,10 +133,11 @@ const Student = () => {
       })
       .then((resBody) => {
         console.log(typeof(students), students,"type");
-       
-       
+        UpdateNotification({message:resBody.message, status:1, show:true});
+
         if (resCode === 200 && students.length > 0) 
         {
+
         console.log(typeof(students), "type");
         setclass(_class+1);
           students.map((obj) => {
@@ -148,6 +153,8 @@ const Student = () => {
 
       })
       .catch((err) => {
+        UpdateNotification({message:"Internal server error occured", status:0, show:true});
+
         console.log(err);
       });
   };
@@ -273,6 +280,7 @@ const Student = () => {
       />
 
       <Footer />
+      <Toaster/>
     </div>
   );
 };

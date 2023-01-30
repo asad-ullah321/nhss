@@ -1,15 +1,4 @@
-const stock = [
-  {
-    _id: 12,
-    student_id: "915M",
-    amount: "100",
-    reason: "Uniform",
-    status: "Paid",
-    date: "2022-08-01",
-    duedate: "2022-08-01",
-  },
- 
-];
+const stock = [];
 
 const FineReducer = (state = stock, action) => {
   console.log(state, "fine.js");
